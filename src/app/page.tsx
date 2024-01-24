@@ -21,6 +21,7 @@ export default function Home() {
   
   const [inputs, setInputs] = useState<Food>(initialInputs);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({ key: '', direction: 'asc' });
+  const [selectedFood, setSelectedFood] = useState<Food | null>(null); // Track selected food for editing
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
@@ -28,14 +29,25 @@ export default function Home() {
     setInputs((prevInputs) => ({ ...prevInputs, [id]: id === 'name' ? sanitizedValue : id === 'foodType' ? sanitizedValue as FoodType : parseFloat(sanitizedValue) }));
   };
 
+  const handleFoodItemClick = (food: Food) => {
+    setSelectedFood(food);
+    setInputs(food);
+  };
+
   const handleSaveClick = async () => {
-    try { 
-      const uniqueId = v4(); // Genera un id único con uuid
-      const newInputs = { ...inputs, id: uniqueId };
-      await setDoc(doc(db, 'foods', uniqueId),  newInputs);   
+    try {
+      if (selectedFood) {
+        // Update existing food
+        await setDoc(doc(db, 'foods', selectedFood.id), inputs);
+      } else {
+        // Add new food
+        const uniqueId = v4();
+        await setDoc(doc(db, 'foods', uniqueId), { ...inputs, id: uniqueId });
+      }
       setInputs(initialInputs);
+      setSelectedFood(null); // Clear selected food after saving
     } catch (e) {
-      console.error("Error adding document: ", e);
+      console.error("Error adding/updating document: ", e);
     }
   };
 
@@ -135,7 +147,7 @@ export default function Home() {
         </thead>
         <tbody>
           {sortedFoodsList.map((food) => (
-            <tr key={food.id} className={styles.foodItem}>
+            <tr key={food.id} className={styles.foodItem} onClick={() => handleFoodItemClick(food)}>
               <td>{food.name}</td>
               <td>{food.foodType}</td>
               <td>{food.calories}</td>
