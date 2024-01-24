@@ -1,37 +1,14 @@
 "use client"
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import styles from "./page.module.css";
-import { collection, addDoc, setDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, setDoc, doc, getDocs } from 'firebase/firestore';
 import { v4 } from 'uuid'; // Importa uuid
-import { db } from "./firebase_service";// Importa tu instancia de Firestore desde donde esté configurada
+import { db } from "./firebase_service";// Importa tu instancia de Firestore desde donde esté configurada 
+import { Food, FoodType } from "@/models/food";
 
-enum FoodType {
-  Dairy = "FoodType.dairy",
-  Drink = "FoodType.drink",
-  Fruit = "FoodType.fruit",
-  Grain = "FoodType.grain",
-  Legume = "FoodType.legume",
-  Meat = "FoodType.meat",
-  Nut = "FoodType.nut",
-  Processed = "FoodType.processed",
-  Sweet = "FoodType.sweet",
-  Vegetable = "FoodType.vegetable",
-  Other = "FoodType.other",
-}
-
-interface Inputs {
-  id: string;
-  addedBy: string;
-  name: string;
-  foodType: FoodType;
-  calories: number;
-  proteins: number;
-  carbs: number;
-  fats: number;
-}
 
 export default function Home() {
-  const initialInputs: Inputs = {
+  const initialInputs: Food = {
     id: "",
     name: "",
     foodType: FoodType.Other,
@@ -42,7 +19,8 @@ export default function Home() {
     addedBy: "app",
   };
   
-  const [inputs, setInputs] = useState<Inputs>(initialInputs);
+  const [inputs, setInputs] = useState<Food>(initialInputs);
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({ key: '', direction: 'asc' });
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
@@ -60,6 +38,46 @@ export default function Home() {
       console.error("Error adding document: ", e);
     }
   };
+
+  const [foodsList, setFoodsList] = useState<Food[]>([]);
+
+  // Fetch data from Firestore and update the state
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "foods"));
+        const foodsData = querySnapshot.docs.map((doc) => doc.data() as Food);
+        setFoodsList(foodsData);
+      } catch (e) {
+        console.error("Error fetching documents: ", e);
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array ensures this effect runs once after the initial render
+
+  const handleSortClick = (key: string) => {
+    setSortConfig({
+      key,
+      direction: sortConfig.key === key && sortConfig.direction === 'asc' ? 'desc' : 'asc',
+    });
+  };
+
+  const sortedFoodsList = [...foodsList].sort((a, b) => {
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+  
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      return sortConfig.direction === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+    }
+  
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+    }
+  
+    // Handle other data types or fallback to default order
+    return 0;
+  });
 
   return (
     <main className={styles.container}>
@@ -102,6 +120,32 @@ export default function Home() {
       <button className={styles.saveButton} onClick={handleSaveClick}>
         Guardar
       </button>
+
+      {/* List of documents */}
+      <table className={styles.foodsTable}>
+        <thead>
+          <tr>
+            <th onClick={() => handleSortClick('name')}>Name</th>
+            <th onClick={() => handleSortClick('foodType')}>Food Type</th>
+            <th onClick={() => handleSortClick('calories')}>Calories</th>
+            <th onClick={() => handleSortClick('proteins')}>Proteins</th>
+            <th onClick={() => handleSortClick('carbs')}>Carbs</th>
+            <th onClick={() => handleSortClick('fats')}>Fats</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedFoodsList.map((food) => (
+            <tr key={food.id} className={styles.foodItem}>
+              <td>{food.name}</td>
+              <td>{food.foodType}</td>
+              <td>{food.calories}</td>
+              <td>{food.proteins}</td>
+              <td>{food.carbs}</td>
+              <td>{food.fats}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </main>
   );
 } 
