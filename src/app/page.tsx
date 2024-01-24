@@ -4,7 +4,9 @@ import styles from "./page.module.css";
 import { collection, addDoc, setDoc, doc, getDocs } from 'firebase/firestore';
 import { v4 } from 'uuid'; // Importa uuid
 import { db } from "./firebase_service";// Importa tu instancia de Firestore desde donde esté configurada 
-import { Food, FoodType } from "@/models/food";
+import { Food, FoodType } from "@/app/models/food";
+import { InputFields } from "./components/input_form";
+import { renderTableBody, renderTableHeader } from "./components/tables";
 
 
 export default function Home() {
@@ -18,7 +20,7 @@ export default function Home() {
     fats: 0,
     addedBy: "app",
   };
-  
+
   const [inputs, setInputs] = useState<Food>(initialInputs);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({ key: '', direction: 'asc' });
   const [selectedFood, setSelectedFood] = useState<Food | null>(null); // Track selected food for editing
@@ -63,8 +65,7 @@ export default function Home() {
       } catch (e) {
         console.error("Error fetching documents: ", e);
       }
-    };
-
+    }; 
     fetchData();
   }, []); // Empty dependency array ensures this effect runs once after the initial render
 
@@ -77,88 +78,31 @@ export default function Home() {
 
   const sortedFoodsList = [...foodsList].sort((a, b) => {
     const aValue = a[sortConfig.key];
-    const bValue = b[sortConfig.key];
-  
-    if (typeof aValue === 'string' && typeof bValue === 'string') {
-      return sortConfig.direction === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
-    }
-  
-    if (typeof aValue === 'number' && typeof bValue === 'number') {
-      return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
-    }
-  
-    // Handle other data types or fallback to default order
+    const bValue = b[sortConfig.key]; 
+    if (typeof aValue === 'string' && typeof bValue === 'string') 
+      return sortConfig.direction === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);  
+    if (typeof aValue === 'number' && typeof bValue === 'number') 
+      return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;  
     return 0;
   });
 
   return (
     <main className={styles.container}>
-      <div className={styles.inputContainer}>
-        <label htmlFor="name">Name</label>
-        <input type="text" id="name" value={inputs.name} onChange={handleInputChange} />
-      </div>
-
-      <div className={styles.inputContainer}>
-        <label htmlFor="foodType">Food Type</label>
-        <select id="foodType" onChange={handleInputChange} value={inputs.foodType}>
-          {Object.values(FoodType).map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className={styles.inputContainer}>
-        <label htmlFor="calories">Calories</label>
-        <input type="number" id="calories" value={inputs.calories} onChange={handleInputChange} />
-      </div>
-
-      <div className={styles.inputContainer}>
-        <label htmlFor="proteins">Proteins</label>
-        <input type="number" id="proteins" value={inputs.proteins} onChange={handleInputChange} />
-      </div>
-
-      <div className={styles.inputContainer}>
-        <label htmlFor="carbs">Carbs</label>
-        <input type="number" id="carbs" value={inputs.carbs} onChange={handleInputChange} />
-      </div>
-
-      <div className={styles.inputContainer}>
-        <label htmlFor="fats">Fats</label>
-        <input type="number" id="fats" value={inputs.fats} onChange={handleInputChange} />
-      </div>
+      <InputFields inputs={inputs} handleInputChange={handleInputChange} handleSaveClick={handleSaveClick} /> 
 
       <button className={styles.saveButton} onClick={handleSaveClick}>
         Guardar
       </button>
 
-      {/* List of documents */}
       <table className={styles.foodsTable}>
         <thead>
-          <tr>
-            <th onClick={() => handleSortClick('name')}>Name</th>
-            <th onClick={() => handleSortClick('foodType')}>Food Type</th>
-            <th onClick={() => handleSortClick('calories')}>Calories</th>
-            <th onClick={() => handleSortClick('proteins')}>Proteins</th>
-            <th onClick={() => handleSortClick('carbs')}>Carbs</th>
-            <th onClick={() => handleSortClick('fats')}>Fats</th>
-          </tr>
+          {renderTableHeader({handleSortClick})}
         </thead>
         <tbody>
-          {sortedFoodsList.map((food) => (
-            <tr key={food.id} className={styles.foodItem} onClick={() => handleFoodItemClick(food)}>
-              <td>{food.name}</td>
-              <td>{food.foodType}</td>
-              <td>{food.calories}</td>
-              <td>{food.proteins}</td>
-              <td>{food.carbs}</td>
-              <td>{food.fats}</td>
-            </tr>
-          ))}
+          {renderTableBody({sortedFoodsList, handleFoodItemClick})}
         </tbody>
-      </table>
+      </table> 
     </main>
   );
-} 
+}
 

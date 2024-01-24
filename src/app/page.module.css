@@ -15,16 +15,6 @@
   height: 100vh;
 }
 
-.inputContainer {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.label {
-  display: block;
-  margin-bottom: 5px;
-}
-
 .saveButton {
   background-color: #4caf50; /* Color de fondo verde (puedes cambiarlo según tus preferencias) */
   color: white;
