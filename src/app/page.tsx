@@ -1,11 +1,10 @@
 "use client"
-
 import { ChangeEvent, useState } from "react";
 import styles from "./page.module.css";
 import { collection, addDoc, setDoc, doc } from 'firebase/firestore';
 import { v4 } from 'uuid'; // Importa uuid
 import { db } from "./firebase_service";// Importa tu instancia de Firestore desde donde esté configurada
- 
+
 enum FoodType {
   Dairy = "FoodType.dairy",
   Drink = "FoodType.drink",
@@ -47,9 +46,7 @@ export default function Home() {
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
-    const sanitizedValue = id === 'calories' || id === 'proteins' || id === 'carbs' || id === 'fats'
-    ? value.replace(',', '.')
-    : value;
+    const sanitizedValue = id === 'calories' || id === 'proteins' || id === 'carbs' || id === 'fats' ? value.replace(',', '.') : value;
     setInputs((prevInputs) => ({ ...prevInputs, [id]: id === 'name' ? sanitizedValue : id === 'foodType' ? sanitizedValue as FoodType : parseFloat(sanitizedValue) }));
   };
 
@@ -57,7 +54,7 @@ export default function Home() {
     try { 
       const uniqueId = v4(); // Genera un id único con uuid
       const newInputs = { ...inputs, id: uniqueId };
-      await setDoc(doc(db, 'foods', uniqueId),  newInputs);  
+      await setDoc(doc(db, 'foods', uniqueId),  newInputs);   
       setInputs(initialInputs);
     } catch (e) {
       console.error("Error adding document: ", e);
@@ -68,7 +65,7 @@ export default function Home() {
     <main className={styles.container}>
       <div className={styles.inputContainer}>
         <label htmlFor="name">Name</label>
-        <input type="text" id="name" onChange={handleInputChange} />
+        <input type="text" id="name" value={inputs.name} onChange={handleInputChange} />
       </div>
 
       <div className={styles.inputContainer}>
@@ -84,22 +81,22 @@ export default function Home() {
 
       <div className={styles.inputContainer}>
         <label htmlFor="calories">Calories</label>
-        <input type="number" id="calories" onChange={handleInputChange} />
+        <input type="number" id="calories" value={inputs.calories} onChange={handleInputChange} />
       </div>
 
       <div className={styles.inputContainer}>
         <label htmlFor="proteins">Proteins</label>
-        <input type="number" id="proteins" onChange={handleInputChange} />
+        <input type="number" id="proteins" value={inputs.proteins} onChange={handleInputChange} />
       </div>
 
       <div className={styles.inputContainer}>
         <label htmlFor="carbs">Carbs</label>
-        <input type="number" id="carbs" onChange={handleInputChange} />
+        <input type="number" id="carbs" value={inputs.carbs} onChange={handleInputChange} />
       </div>
 
       <div className={styles.inputContainer}>
         <label htmlFor="fats">Fats</label>
-        <input type="number" id="fats" onChange={handleInputChange} />
+        <input type="number" id="fats" value={inputs.fats} onChange={handleInputChange} />
       </div>
 
       <button className={styles.saveButton} onClick={handleSaveClick}>
@@ -107,4 +104,5 @@ export default function Home() {
       </button>
     </main>
   );
-}
+} 
+
