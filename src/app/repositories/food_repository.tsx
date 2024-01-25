@@ -1,4 +1,4 @@
-import { collection, addDoc, setDoc, doc, getDocs } from 'firebase/firestore'; 
+import { collection, setDoc, doc, getDocs } from 'firebase/firestore'; 
 import { db } from "../firebase_service";
 import { v4 } from 'uuid'; // Importa uuid
 import { Food } from "@/app/models/food";
@@ -10,9 +10,8 @@ export class FoodRepository {
     }
 
     async updateFood(food: Food): Promise<void> {
-        if (food.id) {
-            await setDoc(doc(db, 'foods', food.id), food);
-        }
+        if (food.id) 
+            await setDoc(doc(db, 'foods', food.id), food); 
     }
 
     async getAllFoods(): Promise<Food[]> {

@@ -22,8 +22,7 @@ export const FoodProvider: React.FC<FoodProviderProps> = ({ children }) => {
         const fetchData = async () => {
             const foodsData = await foodRepository.getAllFoods();
             setFoods(foodsData);
-        };
-
+        }; 
         fetchData();
     }, []);
 
@@ -46,8 +45,7 @@ export const FoodProvider: React.FC<FoodProviderProps> = ({ children }) => {
 
 export const useFood = (): FoodContextType => {
     const context = useContext(FoodContext);
-    if (!context) {
-        throw new Error('useFood must be used within a FoodProvider');
-    }
+    if (!context) 
+        throw new Error('useFood must be used within a FoodProvider'); 
     return context;
 };
