@@ -1,0 +1,19 @@
+.macro {
+    display: flex;
+    justify-content: space-between; 
+    padding: 10px;
+}
+
+.macroName { 
+    padding: 5px;
+    font-weight: 300;
+}
+
+.macroValue {  
+    padding: 0px 10px;
+    width: 100px;
+    font-weight: bold; 
+    margin-left: 10px;
+    border-radius: 10px;
+    border: 0px;
+} 

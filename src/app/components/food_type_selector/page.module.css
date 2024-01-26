@@ -1,0 +1,19 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.foodTypeSelector{
+    margin: 10px;
+    padding: 0px 5px;
+    width: 180px;
+    color: #FF6E40; 
+    border-radius: 10px;
+    border: 0px; 
+}
+
+.imageContainer { 
+    display: flex; 
+    margin: 10px;
+}
