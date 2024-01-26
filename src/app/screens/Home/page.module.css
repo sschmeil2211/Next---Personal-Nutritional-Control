@@ -13,5 +13,9 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-}
+} 
 
+.foodsTable{ 
+  justify-content: space-between;   
+  margin-top: 20px;
+}
