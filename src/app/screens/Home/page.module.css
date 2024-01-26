@@ -15,16 +15,3 @@
   height: 100vh;
 }
 
-.saveButton {
-  background-color: #4caf50; /* Color de fondo verde (puedes cambiarlo según tus preferencias) */
-  color: white;
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.saveButton:hover {
-  background-color: #45a049; /* Cambia el color al pasar el mouse sobre el botón */
-}

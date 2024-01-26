@@ -1,10 +1,10 @@
 "use client"
 import { ChangeEvent, useState, useEffect } from "react";
 import styles from "./page.module.css";
-import { Food, FoodType } from "@/app/models/food";
-import { InputFields } from "../../components/input_form";
+import { Food, FoodType } from "@/app/models/food"; 
 import { renderTableBody, renderTableHeader } from "../../components/tables";
-import { useFood } from "@/app/providers/food_provider";
+import { useFood } from "@/app/providers/food_provider"; 
+import FoodCard from "@/app/components/food_card";
 
 
 export default function Home() {
@@ -29,8 +29,12 @@ export default function Home() {
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
-        const sanitizedValue = id === 'calories' || id === 'proteins' || id === 'carbs' || id === 'fats' ? value.replace(',', '.') : value;
-        setInputs((prevInputs) => ({ ...prevInputs, [id]: id === 'name' ? sanitizedValue : id === 'foodType' ? (sanitizedValue as FoodType) : parseFloat(sanitizedValue) }));
+        if (id === 'foodType') {
+            setInputs((prevInputs) => ({ ...prevInputs, [id]: value as FoodType }));
+        } else {
+            const sanitizedValue = id === 'calories' || id === 'proteins' || id === 'carbs' || id === 'fats' ? value.replace(',', '.') : value;
+            setInputs((prevInputs) => ({ ...prevInputs, [id]: id === 'name' ? sanitizedValue : parseFloat(sanitizedValue) }));
+        }
     };
 
     const handleFoodItemClick = (food: Food) => {
@@ -62,13 +66,14 @@ export default function Home() {
             return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
         return 0;
     });
-
+ 
     return (
         <main className={styles.container}>
-            <InputFields inputs={inputs} handleInputChange={handleInputChange} handleSaveClick={handleSaveClick} /> 
-            <button className={styles.saveButton} onClick={handleSaveClick}>
-                Guardar
-            </button> 
+            <FoodCard 
+                handleSaveClick={handleSaveClick}
+                inputs={inputs}
+                handleInputChange={handleInputChange} 
+            /> 
             <table className={styles.foodsTable}>
                 <thead>
                     {renderTableHeader({ handleSortClick })}
@@ -76,7 +81,7 @@ export default function Home() {
                 <tbody>
                     {renderTableBody({ sortedFoodsList, handleFoodItemClick })}
                 </tbody>
-            </table>
+            </table> 
         </main>
     );
 }
