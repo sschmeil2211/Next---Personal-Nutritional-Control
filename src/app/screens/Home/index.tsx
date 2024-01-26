@@ -74,13 +74,9 @@ export default function Home() {
                 inputs={inputs}
                 handleInputChange={handleInputChange} 
             /> 
-            <table className={styles.foodsTable}>
-                <thead>
-                    {renderTableHeader({ handleSortClick })}
-                </thead>
-                <tbody>
-                    {renderTableBody({ sortedFoodsList, handleFoodItemClick })}
-                </tbody>
+            <table className={styles.foodsTable}> 
+                {renderTableHeader({ handleSortClick })} 
+                {renderTableBody({ sortedFoodsList, handleFoodItemClick })} 
             </table> 
         </main>
     );
