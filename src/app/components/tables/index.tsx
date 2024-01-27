@@ -10,12 +10,13 @@ interface TableHeaderProps {
 
 export const renderTableHeader: React.FC<TableHeaderProps> = ({ handleSortClick }) => (
     <tr>
-        <th onClick={() => handleSortClick('foodType')}>Food Type</th>
+        <th onClick={() => handleSortClick('foodType')}>Type</th>
         <th onClick={() => handleSortClick('name')}>Name</th>
         <th onClick={() => handleSortClick('calories')}>Calories</th>
         <th onClick={() => handleSortClick('proteins')}>Proteins</th>
         <th onClick={() => handleSortClick('carbs')}>Carbs</th>
         <th onClick={() => handleSortClick('fats')}>Fats</th>
+        <th onClick={() => handleSortClick('measureType')}>Measure</th>
     </tr>
 );
 
@@ -40,6 +41,7 @@ export const renderTableBody: React.FC<TableBodyProps> = ({ sortedFoodsList, han
                 <td className={styles.column}>{food.proteins}</td>
                 <td className={styles.column}>{food.carbs}</td>
                 <td className={styles.column}>{food.fats}</td>
+                <td className={styles.column}>{food.measureType}</td>
             </tr>
         ))}
     </>
