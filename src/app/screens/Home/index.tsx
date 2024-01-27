@@ -1,9 +1,9 @@
 "use client"
 import { ChangeEvent, useState, useEffect } from "react";
 import styles from "./page.module.css";
-import { Food, FoodType } from "@/app/models/food"; 
+import { Food, FoodType, MeasureType } from "@/app/models/food";
 import { renderTableBody, renderTableHeader } from "../../components/tables";
-import { useFood } from "@/app/providers/food_provider"; 
+import { useFood } from "@/app/providers/food_provider";
 import FoodCard from "@/app/components/food_card";
 
 
@@ -17,6 +17,7 @@ export default function Home() {
         carbs: 0,
         fats: 0,
         addedBy: "app",
+        measureType: MeasureType.g
     };
 
     const [inputs, setInputs] = useState<Food>(initialInputs);
@@ -29,9 +30,9 @@ export default function Home() {
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
-        if (id === 'foodType') {
-            setInputs((prevInputs) => ({ ...prevInputs, [id]: value as FoodType }));
-        } else {
+        if (id === 'foodType' || id === 'measureType')
+            setInputs((prevInputs) => ({ ...prevInputs, [id]: value as FoodType | MeasureType }));
+        else {
             const sanitizedValue = id === 'calories' || id === 'proteins' || id === 'carbs' || id === 'fats' ? value.replace(',', '.') : value;
             setInputs((prevInputs) => ({ ...prevInputs, [id]: id === 'name' ? sanitizedValue : parseFloat(sanitizedValue) }));
         }
@@ -66,18 +67,20 @@ export default function Home() {
             return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
         return 0;
     });
- 
+
     return (
         <main className={styles.container}>
-            <FoodCard 
+            <FoodCard
                 handleSaveClick={handleSaveClick}
                 inputs={inputs}
-                handleInputChange={handleInputChange} 
-            /> 
-            <table className={styles.foodsTable}> 
-                {renderTableHeader({ handleSortClick })} 
-                {renderTableBody({ sortedFoodsList, handleFoodItemClick })} 
-            </table> 
+                handleInputChange={handleInputChange}
+            />
+            <table className={styles.foodsTable}>
+                <tbody>
+                    {renderTableHeader({ handleSortClick })}
+                    {renderTableBody({ sortedFoodsList, handleFoodItemClick })}
+                </tbody>
+            </table>
         </main>
     );
 }

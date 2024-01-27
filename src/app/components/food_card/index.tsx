@@ -2,17 +2,19 @@ import React, { ChangeEvent } from 'react';
 import styles from "./page.module.css";
 import MacronutrientInput from '../macronutrient_input';
 import CaloriesInput from '../calories_input';
-import { FoodType } from '@/app/models/food';
+import { FoodType, MeasureType } from '@/app/models/food';
 import FoodTypeSelector from '../food_type_selector';
+import MeasureTypeSelector from '../measure_select';
 
 interface NutritionCardProps {
     inputs: {
         name: string;
-        foodType: FoodType;
         calories: number;
         proteins: number;
         carbs: number;
         fats: number;
+        foodType: FoodType;
+        measureType: MeasureType
     };
     handleInputChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     handleSaveClick: () => void;
@@ -65,7 +67,10 @@ const FoodCard: React.FC<NutritionCardProps> = ({ inputs, handleInputChange, han
                     />
                 </div>
             </div>
-            <div className={styles.perServing}>Every 100g</div>
+            <MeasureTypeSelector
+                onSelectMeasureType={(measureType) => handleInputChange({ target: { id: 'measureType', value: measureType } } as ChangeEvent<HTMLSelectElement>)}
+                selectedMeasureType={inputs.measureType} 
+            /> 
             <button className={styles.saveButton} onClick={handleSaveClick}>
                 Guardar
             </button>

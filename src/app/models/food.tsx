@@ -7,6 +7,7 @@ export interface Food {
     proteins: number;
     carbs: number;
     fats: number;
+    measureType: MeasureType
     [key: string]: string | number; // Add an index signature
 }
 
@@ -22,4 +23,9 @@ export enum FoodType {
     Sweet = "FoodType.sweet",
     Vegetable = "FoodType.vegetable",
     Other = "FoodType.other",
+}
+
+export enum MeasureType{
+    g = "MeasureType.g",
+    ml = "MeasureType.ml",
 }
