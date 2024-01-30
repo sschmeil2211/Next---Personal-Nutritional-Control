@@ -75,12 +75,12 @@ export default function Home() {
                 inputs={inputs}
                 handleInputChange={handleInputChange}
             />
-            <table className={styles.foodsTable}>
+            {/* <table className={styles.foodsTable}>
                 <tbody>
                     {renderTableHeader({ handleSortClick })}
                     {renderTableBody({ sortedFoodsList, handleFoodItemClick })}
                 </tbody>
-            </table>
+            </table> */}
         </main>
     );
 }
