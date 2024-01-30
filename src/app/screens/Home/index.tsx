@@ -66,7 +66,7 @@ export default function Home() {
         if (typeof aValue === 'number' && typeof bValue === 'number')
             return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
         return 0;
-    });
+    }); 
 
     return (
         <main className={styles.container}>
@@ -75,12 +75,12 @@ export default function Home() {
                 inputs={inputs}
                 handleInputChange={handleInputChange}
             />
-            {/* <table className={styles.foodsTable}>
+            <table className={styles.foodsTable}>
                 <tbody>
                     {renderTableHeader({ handleSortClick })}
                     {renderTableBody({ sortedFoodsList, handleFoodItemClick })}
                 </tbody>
-            </table> */}
+            </table>
         </main>
     );
 }
